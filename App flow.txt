@@ -1,0 +1,30 @@
+QUESTION :🚀 At What Point is the Application Created?
+
+When building an application using Git, Jenkins, Maven, Docker, and Kubernetes, the application is fully created at the point when a Docker image is built and deployed to Kubernetes. Let's break down the process step by step:
+
+🛠 CI/CD Pipeline Workflow
+1️⃣ Code Development (Git)
+Developers write code and push it to GitHub/GitLab/Bitbucket.
+This is the starting point for the pipeline.
+🔹 Trigger:
+Jenkins detects new code using Poll SCM or a webhook.
+
+2️⃣ Continuous Integration (Jenkins + Maven)
+Jenkins pulls the latest code from Git.
+Jenkins builds the application using Maven (mvn clean package).
+If the build is successful, it proceeds to the next stage.
+📌 At this stage, the application is compiled and packaged but not yet created as a container.
+
+3️⃣ Containerization (Docker)
+Jenkins uses Docker to package the application into a container image.
+The Docker image is then pushed to a container registry (DockerHub, AWS ECR, or GCR).
+✅ At this point, the application is containerized and ready for deployment.
+
+4️⃣ Deployment (Kubernetes)
+Kubernetes pulls the Docker image from the container registry.
+It deploys the containerized application in a Kubernetes Pod.
+The application is exposed using a Kubernetes Service & Ingress.
+✅ At this point, the application is fully created and accessible! 🎉
+
+🔹 Final Point Where the Application is Created?
+✅ When the Docker image is built and deployed in Kubernetes.

@@ -1,0 +1,895 @@
+🔹 1. What is Jenkins?
+✅ Answer:
+Jenkins is an open-source automation server used for Continuous Integration (CI) and Continuous Deployment (CD). It helps automate the software development process by integrating, building, testing, and deploying code.
+
+🔹 2. What are the key features of Jenkins?
+✅ Answer:
+
+Free & Open-Source
+Plugin Support (Over 1,800 plugins)
+Easy Integration with Git, Docker, Kubernetes, etc.
+Distributed Builds (Master-Slave architecture)
+Pipeline as Code (Declarative & Scripted Pipelines)
+Web-Based Dashboard
+
+🔹 3. What is Continuous Integration (CI) in Jenkins?
+✅ Answer:
+CI = Continuous Integration (Automated builds + Testing)
+Continuous Integration (CI) automates the process of merging code changes from multiple developers into a shared repository, ensuring early bug detection.
+
+✅ Example CI Process in Jenkins:
+
+Developer pushes code to GitHub.
+Jenkins triggers a build.
+Automated tests are executed.
+If successful, the code is deployed.
+
+🔹 4. What are Jenkins Pipelines?
+✅ Answer:
+Jenkins Pipelines are scripts that define the CI/CD workflow as code. They are written using Groovy-based syntax.
+
+✅ Example Jenkinsfile (Declarative Pipeline):
+
+groovy
+Copy
+Edit
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps { echo 'Building the project...' }
+        }
+        stage('Test') {
+            steps { echo 'Running tests...' }
+        }
+        stage('Deploy') {
+            steps { echo 'Deploying the project...' }
+        }
+    }
+}
+
+🔹 5. What is the difference between Freestyle Jobs and Pipeline Jobs?
+Feature  	Freestyle Job	Pipeline Job
+Configuration	GUI-based	Code-based (Jenkinsfile)
+Flexibility	Limited	        Highly flexible
+Scripting	No scripting	Uses Groovy
+Best for	Simple tasks	Complex workflows
+✅ Example Pipeline Command:
+
+sh
+jenkins-cli build my-pipeline-job
+
+🔹 6. What are the types of Jenkins Pipelines?
+✅ Answer:
+
+Declarative Pipeline (Easier to use, structured format)
+Scripted Pipeline (More powerful, written in pure Groovy)
+✅ Example Scripted Pipeline:
+
+groovy
+node {
+    stage('Build') {
+        echo 'Building project...'
+    }
+    stage('Test') {
+        echo 'Running tests...'
+    }
+    stage('Deploy') {
+        echo 'Deploying to production...'
+    }
+}
+
+🔹 7. What is an Agent in Jenkins?
+✅ Answer:
+An agent (or node) is a machine that runs Jenkins jobs.
+
+Master: Handles scheduling, UI, and logs.
+Agent/Slave: Executes the builds.
+✅ Example to define an agent:
+
+groovy
+pipeline {
+    agent { label 'linux-node' }
+}
+
+🔹 8. How do you trigger a Jenkins job automatically?
+✅ Methods:
+
+Webhooks (GitHub, GitLab, Bitbucket)
+Poll SCM (H/5 * * * * → Every 5 minutes)
+Cron Jobs
+Parameterized Builds
+Trigger via API
+✅ Example Cron Expression (Daily at 12 AM):
+
+sh
+Copy
+Edit
+0 0 * * * 
+
+🔹 9. What are Jenkins Environment Variables?
+✅ Answer:
+Jenkins provides built-in variables for pipelines.
+
+✅ Common Variables:
+
+Variable	Description
+$JOB_NAME	Name of the job
+$BUILD_NUMBER	Build ID
+$WORKSPACE	Workspace path
+✅ Example Usage in Pipeline:
+
+groovy
+echo "Job Name: ${env.JOB_NAME}"
+echo "Workspace: ${env.WORKSPACE}"
+
+🔹 10. How do you store credentials securely in Jenkins?
+✅ Answer:
+Jenkins provides Credential Management to store:
+
+SSH Keys
+API Tokens
+Passwords
+✅ Example to use credentials in Jenkinsfile:
+
+groovy
+withCredentials([usernamePassword(credentialsId: 'docker-login', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+    sh 'docker login -u $USER -p $PASS'
+}
+
+🔹 11. What is a Jenkins Shared Library?
+✅ Answer:
+A Shared Library is reusable Groovy code stored in a Git repository for pipelines.
+
+✅ Usage:
+
+groovy
+@Library('my-shared-lib')
+
+🔹 12. How do you integrate Jenkins with Docker?
+✅ Answer:
+
+Install Docker Plugin in Jenkins
+Use Docker inside a pipeline:
+groovy
+pipeline {
+    agent { docker 'maven:3.8.1' }
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+    }
+}
+
+🔹 13. What is Blue Ocean in Jenkins?
+✅ Answer:
+Blue Ocean is a modern UI for Jenkins Pipelines that provides a visual representation of the CI/CD workflow.
+
+🔹 14. How do you backup Jenkins?
+✅ Answer:
+
+Backup the $JENKINS_HOME/ directory.
+Use Jenkins plugins like ThinBackup.
+Automate backups using a script:
+sh
+tar -czvf jenkins-backup.tar.gz /var/lib/Jenkins
+
+🔹 15. What is the difference between Jenkinsfile and Jenkins CLI?
+Feature	Jenkinsfile	                      Jenkins CLI
+Purpose	Defines pipeline as code	Manages Jenkins via command line
+Syntax	Groovy	                        Shell commands
+Example	pipeline { stages { ... } }	java -jar jenkins-cli.jar build job-name
+
+🔹 16. What is the use of Webhooks in Jenkins?
+✅ Answer:
+Webhooks automatically trigger builds when changes are pushed to a Git repository.
+
+🔹 17. What is Jenkinsfile and where is it stored?
+✅ Answer:
+A Jenkinsfile is a text file that defines a Jenkins pipeline and is stored in a Git repository.
+
+🔹 18. How do you secure Jenkins?
+✅ Best Practices:
+
+Use Role-Based Access Control (RBAC).
+Disable anonymous access.
+Use HTTPS for Jenkins.
+Regularly update plugins.
+Backup Jenkins regularly.
+
+🔹 19. What is Jenkins Multibranch Pipeline?
+✅ Answer:
+A Multibranch Pipeline dynamically creates Jenkins jobs for each branch in a Git repository.
+
+🔹 20. How do you deploy an application using Jenkins?
+✅ Example Deployment Pipeline:
+
+groovy
+pipeline {
+    agent any
+    stages {
+        stage('Deploy') {
+            steps {
+                sh 'scp target/*.war user@server:/var/www/'
+            }
+        }
+    }
+}
+
+***********************************************************************************************************************************************************************
+
+Hands-on Jenkins Exercise: Automate a CI/CD Pipeline 🚀
+In this exercise, you'll set up a Jenkins pipeline that:
+✅ Pulls code from GitHub
+✅ Builds an application using Maven
+✅ Runs unit tests
+✅ Deploys the application to a Docker container
+
+📌 Prerequisites
+Before starting, ensure you have:
+✅ Jenkins Installed (With Pipeline Plugin)
+✅ Docker Installed
+✅ GitHub Repository (With a Java/Maven Project)
+
+📌 Step 1: Create a Jenkins Pipeline Job
+1️⃣ Open Jenkins Dashboard
+2️⃣ Click on "New Item" → Select "Pipeline"
+3️⃣ Scroll down to Pipeline Definition → Choose Pipeline Script from SCM
+4️⃣ Enter your GitHub Repo URL
+
+📌 Step 2: Create a Jenkinsfile
+In your GitHub repo, create a file named Jenkinsfile with the following content:
+
+groovy
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = 'my-app:latest'
+        DOCKER_REGISTRY = 'docker.io/myusername'
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git 'https://github.com/myusername/my-repo.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t $DOCKER_IMAGE .'
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([string(credentialsId: 'docker-hub-password', variable: 'DOCKER_PASS')]) {
+                    sh 'echo $DOCKER_PASS | docker login -u myusername --password-stdin'
+                    sh 'docker tag $DOCKER_IMAGE $DOCKER_REGISTRY/$DOCKER_IMAGE'
+                    sh 'docker push $DOCKER_REGISTRY/$DOCKER_IMAGE'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'docker run -d -p 8080:8080 $DOCKER_IMAGE'
+            }
+        }
+    }
+}
+📌 Step 3: Configure Jenkins Credentials
+1️⃣ Go to Jenkins Dashboard → Manage Jenkins → Manage Credentials
+2️⃣ Click on Global Credentials → Add Credentials
+3️⃣ Select Username & Password
+4️⃣ Set ID as docker-hub-password (Matches credentialsId in the Jenkinsfile)
+
+📌 Step 4: Run the Pipeline
+1️⃣ Save the Jenkins job
+2️⃣ Click "Build Now"
+3️⃣ Monitor the logs to see each stage executing
+
+📌 Step 5: Verify Deployment
+✅ Run docker ps to check if the container is running
+✅ Open http://localhost:8080/ in the browser
+
+***********************************************************************************************************************************************************************
+
+1. What is Jenkins? Why is it used in DevOps?
+👉 Answer:
+Jenkins is an open-source automation server used for continuous integration (CI) and continuous delivery (CD). It helps automate the build, test, and deployment of applications, making DevOps workflows faster and more efficient.
+
+2. What are the key features of Jenkins?
+👉 Answer:
+
+Free and Open-source
+Plugin-based Architecture (Supports 1,500+ plugins)
+Easy Integration with Git, Docker, Kubernetes, AWS, etc.
+Distributed Builds (Master-Slave Architecture)
+Pipeline as Code using Jenkinsfile
+
+3. How does Jenkins work?
+👉 Answer:
+1️⃣ Developers push code to a Git repository (GitHub, GitLab, Bitbucket).
+2️⃣ Jenkins pulls the latest code and triggers a build.
+3️⃣ The build process compiles, tests, and packages the application.
+4️⃣ Jenkins can deploy the application to staging/production environments.
+
+4. What is a Jenkins Pipeline?
+👉 Answer:
+A Jenkins Pipeline is a scripted or declarative automation that defines the complete CI/CD workflow. It helps in automating multiple stages like build, test, and deploy.
+
+Example of a Declarative Pipeline:
+
+groovy
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'docker run -d -p 8080:8080 my-app'
+            }
+        }
+    }
+}
+
+5. What is the difference between a Freestyle Job and a Pipeline Job?
+👉 Answer:
+
+Feature	            Freestyle Job	Pipeline Job
+Definition	Simple UI-based job	Script-based (Jenkinsfile)
+Flexibility	Limited	               Highly Flexible
+Best For	Small automation tasks	Complex CI/CD workflows
+Code Management	No version control	Version-controlled (stored in Git)
+
+📌 Intermediate Jenkins Questions
+6. What is the use of the Jenkinsfile?
+👉 Answer:
+A Jenkinsfile is a text file that defines a Jenkins pipeline as code. It allows you to version control your pipeline and store it in Git.
+
+7. How do you trigger a Jenkins job automatically?
+👉 Answer:
+You can trigger Jenkins jobs using:
+✅ Webhook from GitHub/GitLab (Triggers a build when new code is pushed)
+✅ Poll SCM (Periodically checks for code changes)
+✅ Cron Job (Schedule Build) (e.g., H 0 * * * runs the job every midnight)
+✅ Another Job Trigger (Triggered after another job completes)
+
+8. What are Jenkins Agents and how do they work?
+👉 Answer:
+Jenkins uses an agent (or node) to run jobs.
+
+Master: Controls and schedules builds
+Agent: Executes jobs (can be another machine)
+Example:
+
+groovy
+pipeline {
+    agent { label 'linux-node' }
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+    }
+}
+
+9. What is Blue Ocean in Jenkins?
+👉 Answer:
+Blue Ocean is a modern UI for Jenkins Pipelines, providing:
+✅ Graphical View of pipelines
+✅ Easier debugging
+✅ Visualization of Pipeline Stages
+
+10. How do you integrate Jenkins with GitHub?
+👉 Answer:
+1️⃣ Install Git Plugin in Jenkins
+2️⃣ Add GitHub credentials in Jenkins → Manage Credentials
+3️⃣ Configure the job to pull code from GitHub
+4️⃣ Add a webhook in GitHub to trigger the job automatically
+
+📌 Advanced Jenkins Questions
+11. What are Jenkins environment variables?
+👉 Answer:
+Jenkins environment variables store build details. Examples:
+
+$BUILD_NUMBER → Build ID
+$JOB_NAME → Job Name
+$WORKSPACE → Workspace directory
+Usage in a pipeline:
+
+groovy
+pipeline {
+    agent any
+    stages {
+        stage('Info') {
+            steps {
+                sh 'echo "Build Number: $BUILD_NUMBER"'
+            }
+        }
+    }
+}
+
+12. How do you secure Jenkins?
+👉 Answer:
+✅ Enable Role-based Access Control (RBAC)
+✅ Use LDAP Authentication
+✅ Restrict anonymous access
+✅ Install Jenkins Security Plugins
+✅ Use HTTPS instead of HTTP
+
+13. What is the difference between EXPOSE and PUBLISH in Docker for Jenkins?
+👉 Answer:
+
+Command	Purpose
+EXPOSE	Opens a port inside the container but does not make it accessible from outside
+PUBLISH (-p 8080:8080)	Maps a container port to the host system to allow external access
+
+14. What are some useful Jenkins plugins?
+👉 Answer:
+🔹 Git Plugin – Integrates Jenkins with GitHub/GitLab
+🔹 Pipeline Plugin – Supports Jenkinsfile
+🔹 Docker Plugin – Builds and deploys Docker images
+🔹 Slack Plugin – Sends notifications to Slack
+🔹 SonarQube Plugin – Code quality analysis
+
+15. How do you deploy Jenkins in Docker?
+👉 Answer:
+Run the following command:
+
+sh
+docker run -d -p 8080:8080 -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts
+
+16. What is the purpose of a Jenkins Agent in a CI/CD pipeline?
+👉 Answer:
+Jenkins agents (nodes) execute jobs on different machines to:
+✅ Distribute workloads
+✅ Run builds in parallel
+✅ Improve performance
+
+17. How do you monitor Jenkins logs?
+👉 Answer:
+
+Via UI: Manage Jenkins → System Log
+Via CLI: /var/log/jenkins/jenkins.log
+Via Docker:
+sh
+docker logs -f jenkins_container
+
+18. How do you back up and restore Jenkins?
+👉 Answer:
+✅ Backup: Copy the Jenkins home directory (/var/jenkins_home)
+✅ Restore: Copy the backup to a new Jenkins server
+
+19. What is an artifact in Jenkins?
+👉 Answer:
+An artifact is a compiled or packaged output from a Jenkins build (e.g., .jar, .war, .zip). It can be stored and used in later stages.
+
+20. How do you set up email notifications in Jenkins?
+👉 Answer:
+1️⃣ Install Email Extension Plugin
+2️⃣ Configure SMTP in Manage Jenkins → Configure System
+3️⃣ Add email step in pipeline:
+
+groovy
+emailext subject: "Build ${currentBuild.result}", 
+          to: "team@example.com",
+          body: "Build completed successfully."
+
+*******************************************************************************************************************************************************************
+
+Scenario 1: Jenkins Job Failure Due to Missing Dependencies
+💬 Interviewer:
+You have a Jenkins pipeline job that fails with the error:
+
+bash
+mvn: command not found
+What steps will you take to resolve this?
+
+✅ Suggested Answer:
+1️⃣ Check if Maven is installed: Run mvn -version on the Jenkins agent.
+2️⃣ Verify Environment Variables: Ensure M2_HOME and PATH include the Maven installation path.
+3️⃣ Install Missing Dependencies: If Maven is not installed, install it using:
+sh
+sudo apt-get install maven   # Ubuntu  
+yum install maven            # CentOS 
+ 
+4️⃣ Check Jenkins Pipeline: Ensure the pipeline specifies the correct Maven tool:
+groovy
+pipeline {
+    agent any
+    tools {
+        maven 'Maven_3.8.6'   // Jenkins tool name
+    }
+}
+
+5️⃣ Restart Jenkins to apply changes.
+
+Scenario 2: Jenkins Pipeline Trigger Not Working
+💬 Interviewer:
+Your Jenkins job is supposed to trigger when code is pushed to GitHub, but it doesn’t. How will you debug this?
+
+✅ Suggested Answer:
+1️⃣ Check Webhook in GitHub
+Go to GitHub Repo → Settings → Webhooks
+Ensure the correct Jenkins URL (http://jenkins-url/github-webhook/) is configured.
+
+2️⃣ Verify Jenkins Job Settings
+Ensure "Build Triggers → GitHub hook trigger for GITScm polling" is checked.
+
+3️⃣ Manually Trigger Webhook
+Use Postman or curl to send a test webhook request:
+sh
+curl -X POST http://jenkins-url/github-webhook/
+
+4️⃣ Check Logs for Errors
+In Jenkins, go to Manage Jenkins → System Log
+Look for webhook errors or authentication issues.
+
+Scenario 3: Disk Space Running Low on Jenkins Server
+💬 Interviewer:
+Your Jenkins server is running out of disk space. How will you handle it?
+
+✅ Suggested Answer:
+1️⃣ Delete Old Builds
+Set a retention policy:
+groovy
+pipeline {
+    options { buildDiscarder(logRotator(numToKeepStr: '10')) }  // Keep last 10 builds
+}
+
+2️⃣ Clear Workspace Folders
+sh
+rm -rf /var/lib/jenkins/workspace/*
+
+3️⃣ Remove Unused Docker Containers (If Using Docker)
+sh
+docker system prune -af
+
+4️⃣ Archive Logs and Move to S3 (For AWS Users)
+sh
+aws s3 cp /var/log/jenkins s3://jenkins-backup/logs/
+
+Scenario 4: Jenkins Build Takes Too Long
+💬 Interviewer:
+Your Jenkins build time has increased significantly. How will you optimize it?
+
+✅ Suggested Answer:
+1️⃣ Enable Parallel Execution
+Use multiple agents for parallel execution:
+groovy
+stage('Test') {
+    parallel {
+        stage('Unit Tests') { steps { sh 'mvn test' } }
+        stage('Integration Tests') { steps { sh 'mvn verify' } }
+    }
+}
+
+2️⃣ Cache Dependencies
+Use a shared Maven repository or Docker layer caching.
+
+3️⃣ Optimize Jenkins Agents
+Increase CPU/RAM allocation for Jenkins workers.
+
+Scenario 5: Jenkinsfile Syntax Error
+💬 Interviewer:
+You wrote a Jenkinsfile, but it fails with:
+css
+org.codehaus.groovy.control.MultipleCompilationErrorsException: unexpected token: }
+How do you debug this?
+
+✅ Suggested Answer:
+1️⃣ Check for Missing Braces {}
+Ensure all opening { have corresponding closing }.
+
+2️⃣ Validate Pipeline Syntax
+Use Manage Jenkins → Pipeline Syntax to validate.
+
+3️⃣ Run in Debug Mode
+Add set -x before script execution:
+groovy
+sh '''
+set -x
+mvn clean package
+'''
+
+Scenario 6: Jenkins Job Failing Due to Incorrect Credentials
+💬 Interviewer:
+Your job fails with:
+rust
+fatal: Authentication failed for 'https://github.com/repo.git'
+How will you fix it?
+
+✅ Suggested Answer:
+1️⃣ Verify Credentials in Jenkins
+Go to Manage Jenkins → Manage Credentials
+Ensure GitHub credentials exist and are correctly configured.
+
+2️⃣ Use SSH Instead of HTTPS
+Add SSH key to Jenkins agent:
+sh
+ssh-keygen -t rsa -b 4096
+ssh-add ~/.ssh/id_rsa
+
+3️⃣ Test Connection
+sh
+git ls-remote git@github.com:user/repo.git
+
+Scenario 7: Jenkins Deployment Fails in Kubernetes
+💬 Interviewer:
+Your Jenkins pipeline deploys an application to Kubernetes, but the pod crashes. How do you troubleshoot?
+
+✅ Suggested Answer:
+1️⃣ Check Pod Logs
+sh
+kubectl logs <pod-name> -n <namespace>
+
+2️⃣ Check Pod Events
+sh
+kubectl describe pod <pod-name> -n <namespace>
+
+3️⃣ Verify Container Image Exists
+sh
+docker pull my-app:latest
+
+Scenario 8: Jenkins Job Stuck in "Waiting for Executor"
+💬 Interviewer:
+A Jenkins job stays in the queue with "Waiting for executor". How do you fix it?
+
+✅ Suggested Answer:
+1️⃣ Check Available Executors
+Go to Manage Jenkins → Nodes and ensure at least one node is online.
+
+2️⃣ Increase Build Executors
+Go to Manage Jenkins → Configure System
+Increase # of executors from 2 to a higher value.
+
+Scenario 9: How Do You Rollback a Failed Deployment?
+💬 Interviewer:
+Your latest deployment failed. How do you quickly roll back to the previous version?
+
+✅ Suggested Answer:
+1️⃣ If using Kubernetes:
+sh
+kubectl rollout undo deployment my-app
+
+2️⃣ If using Docker:
+sh
+docker run -d -p 8080:8080 my-app:previous
+
+3️⃣ If using Jenkins Pipelines:
+Store previous artifacts and redeploy:
+groovy
+stage('Rollback') {
+    steps {
+        sh 'kubectl rollout undo deployment my-app'
+    }
+}
+
+Scenario 10: Jenkins Job is Not Running on a Specific Agent
+💬 Interviewer:
+Your pipeline job is configured to run on a specific node, but it remains in the queue. How do you fix it?
+
+✅ Suggested Answer:
+1️⃣ Check If Agent is Online
+sh
+systemctl status Jenkins
+
+2️⃣ Check Agent Logs
+sh
+cat /var/log/jenkins/jenkins.log
+
+3️⃣ Restart the Agent
+sh
+service jenkins restart
+
+**************************************************************************************************************************************************************************************************************
+
+🔹 Basic Jenkins Questions
+1️⃣ What is Jenkins, and why is it used?
+💡 Jenkins is an open-source CI/CD automation tool that helps automate building, testing, and deploying applications. It integrates with Git, Maven, Docker, Kubernetes, and cloud platforms.
+
+2️⃣ What are the key components of Jenkins architecture?
+✅ Jenkins Server (Master) – Handles job scheduling, UI, and plugin management.
+✅ Build Nodes/Agents – Execute jobs on different machines.
+✅ Jobs/Pipelines – Define the CI/CD workflow.
+✅ Plugins – Extend Jenkins functionalities.
+
+3️⃣ Difference between Freestyle Jobs and Pipelines?
+Feature	                      Freestyle Job	                   Pipeline Job
+Definition	                  GUI-based job configuration	      Code-based (Groovy)
+Flexibility	                  Limited	                          Highly flexible
+Version Control	          No	                          Yes (Jenkinsfile in Git)
+Error Handling	              Basic	                          Advanced (try-catch)
+Recommended?	          ❌ No (Legacy)	              ✅ Yes (Modern Approach)
+
+🔹 Intermediate Jenkins Questions
+4️⃣ What is a Jenkins Pipeline? How does it work?
+💡 A Jenkins Pipeline is a series of steps that automate software development from build to deployment. It uses a Jenkinsfile (written in Groovy) to define the pipeline.
+
+🔹 Two Types of Pipelines
+1️⃣ Declarative Pipeline – Easier to read, uses structured syntax.
+2️⃣ Scripted Pipeline – More flexible but complex.
+
+Example of a Declarative Pipeline:
+
+groovy
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'kubectl apply -f deployment.yaml'
+            }
+        }
+    }
+}
+
+5️⃣ What is the difference between Declarative and Scripted Pipelines?
+Feature	                    Declarative	             Scripted
+Syntax	                Simple, structured	         Complex, flexible
+Error Handling	            Limited	                 Advanced (try-catch)
+Best for?	                Most use cases	         Advanced workflows
+Example Keyword	        pipeline {}	                 node {}
+
+6️⃣ What is an agent in Jenkins?
+💡 An agent is a node (machine) where Jenkins executes builds.
+
+🔹 Types of Agents:
+✅ Built-in (Master Node) – Runs jobs on the Jenkins server.
+✅ Slave (Worker Node) – Runs jobs on separate machines for scalability.
+
+7️⃣ How do you trigger a Jenkins job automatically?
+✅ Poll SCM – Checks Git periodically for changes.
+✅ Webhooks (Recommended) – GitHub/GitLab sends a trigger to Jenkins.
+✅ Build Triggers – Schedule jobs using CRON (H/5 * * * *).
+✅ Upstream Jobs – A build triggers another build.
+
+8️⃣ What is the difference between Poll SCM and Webhooks?
+Feature	                  Poll SCM	           Webhook
+Trigger	              Jenkins checks repo	  Repo notifies Jenkins
+Efficiency	              CPU-intensive	      Efficient
+Latency	              Delay in builds	      Instant trigger
+✅ Webhooks are preferred for real-time triggers.
+
+9️⃣ How do you integrate Jenkins with GitHub?
+1️⃣ Install Git Plugin in Jenkins.
+2️⃣ Configure GitHub Webhook (in GitHub settings).
+3️⃣ Add repository URL in Jenkins Job > Source Code Management.
+4️⃣ Use git checkout in Jenkinsfile to fetch code.
+
+groovy
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/user/repo.git'
+            }
+        }
+    }
+}
+
+🔹 Advanced Jenkins Questions
+🔟 How do you handle Jenkins job failures?
+✅ Check Console Output for errors.
+✅ Verify Git repository access.
+✅ Check build dependencies (Maven, Docker, etc.).
+✅ Restart Jenkins if needed (systemctl restart jenkins).
+✅ Use try-catch in pipeline for error handling.
+
+groovy
+stage('Build') {
+    steps {
+        script {
+            try {
+                sh 'mvn clean package'
+            } catch (Exception e) {
+                echo 'Build Failed!'
+            }
+        }
+    }
+}
+
+1️⃣1️⃣ What is a Jenkinsfile?
+💡 A Jenkinsfile is a script (written in Groovy) that defines a Jenkins Pipeline.
+
+✅ Enables Pipeline as Code.
+✅ Can be version-controlled in Git.
+✅ Supports Declarative & Scripted Pipelines.
+
+1️⃣2️⃣ How do you deploy an application using Jenkins?
+✅ For Docker Deployment:
+
+groovy
+pipeline {
+    agent any
+    stages {
+        stage('Build Image') {
+            steps {
+                sh 'docker build -t myapp:latest .'
+            }
+        }
+        stage('Push Image') {
+            steps {
+                sh 'docker push myrepo/myapp:latest'
+            }
+        }
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f k8s/deployment.yaml'
+            }
+        }
+    }
+}
+
+1️⃣3️⃣ How do you integrate Jenkins with Kubernetes?
+✅ Install Kubernetes Plugin in Jenkins.
+✅ Set up Kubernetes cluster (kubectl config set-context).
+✅ Use Jenkins to deploy workloads (kubectl apply -f deployment.yaml).
+
+1️⃣4️⃣ What are Jenkins Shared Libraries?
+💡 Jenkins Shared Libraries allow you to reuse pipeline code across multiple Jenkinsfiles.
+
+✅ Reusability – Avoid duplicating pipeline logic.
+✅ Stored in Git – Easy version control.
+✅ Example Library Call:
+
+groovy
+@Library('my-shared-lib') _
+pipeline {
+    agent any
+    stages {
+        stage('Deploy') {
+            steps {
+                myCustomDeployFunction()
+            }
+        }
+    }
+}
+
+1️⃣5️⃣ How do you secure Jenkins?
+✅ Use Role-Based Access Control (RBAC) with Matrix Authorization Plugin.
+✅ Enable Jenkins HTTPS (/etc/default/jenkins).
+✅ Use API Tokens instead of passwords.
+✅ Install Audit Plugins to monitor changes.
+✅ Restrict public access to Jenkins UI.
+
+
+*************************************************************************************************************************************************************************
